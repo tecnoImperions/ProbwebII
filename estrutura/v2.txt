@@ -1,0 +1,28 @@
+probwebII/
+│
+├── app.py                 # Archivo principal Flask
+├── .venv/
+├── requirements.txt       # Dependencias (opcional)
+│
+├── templates/
+│   ├── base.html          # Layout principal
+│   ├── index.html         # Dashboard principal
+├── index.html
+│   └── auth/
+│       ├── login.html
+│       └── register.html
+│
+├── static/
+│   ├── css/
+│   │   └── style.css      # Estilos globales
+│   ├── js/
+│   │   └── dragdrop.js    # Drag & drop
+│   └── img/
+│
+├── models/
+│   ├── db.py              # Conexión a MySQL
+│   └── user.py            # Modelos relacionados a usuarios
+│   └── producto.py  
+│
+└── utils/
+    └── auth_utils.py      # Funciones de autenticación (hash de contraseñas, etc.)

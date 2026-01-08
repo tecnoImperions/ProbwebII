@@ -1,0 +1,32 @@
+probwebII/
+│
+├── app.py                 # Archivo principal Flask
+├── .venv/
+├── requirements.txt
+│
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   └── auth/
+│       ├── login.html
+│       └── register.html
+│
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── img/
+│
+├── models/
+│   ├── db.py
+│   ├── user.py
+│   ├── producto.py
+│   └── tienda.py           # Nuevo: manejo de tiendas
+│
+├── controllers/           # Separar lógica de rutas
+│   ├── auth_controller.py
+│   ├── user_controller.py
+│   ├── producto_controller.py
+│   └── tienda_controller.py
+│
+└── utils/
+    └── auth_utils.py
