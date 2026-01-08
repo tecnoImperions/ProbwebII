@@ -5,6 +5,9 @@ probwebII/
 ├── requirements.txt
 │
 ├── templates/
+    admin/
+    cliente/
+    trabajador/
 │   ├── base.html
 │   ├── index.html
 │   └── auth/
