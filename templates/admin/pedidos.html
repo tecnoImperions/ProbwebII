@@ -1,0 +1,32 @@
+{% extends 'admin/base.html' %}
+{% block title %}Pedidos{% endblock %}
+
+{% block content %}
+<h2>Pedidos</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Usuario</th>
+            <th>Tienda</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha Creación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in pedidos %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.cliente_nombre }}</td>
+            <td>{{ p.usuario_nombre }}</td>
+            <td>{{ p.tienda_nombre }}</td>
+            <td>{{ p.total }}</td>
+            <td>{{ p.estado }}</td>
+            <td>{{ p.fecha_creacion }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

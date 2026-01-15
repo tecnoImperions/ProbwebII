@@ -1,0 +1,228 @@
+{% extends 'cliente/base.html' %}
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+
+<style>
+.carrito-header{margin-bottom:20px}
+.carrito-header h5{font-size:1.4rem;font-weight:700;color:#1e293b}
+.carrito-header p{font-size:.9rem;color:#64748b}
+
+.carrito-item{
+  background:#fff;border-radius:12px;padding:14px;
+  margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.06);
+  display:flex;gap:12px;align-items:center
+}
+
+.item-img{
+  width:80px;height:80px;border-radius:8px;
+  overflow:hidden;flex-shrink:0;background:#f1f5f9;
+  display:flex;align-items:center;justify-content:center
+}
+.item-img img{width:100%;height:100%;object-fit:cover}
+.item-img i{font-size:2rem;color:#cbd5e1}
+
+.item-info{flex:1;min-width:0}
+.item-nombre{font-size:.95rem;font-weight:600;color:#1e293b;margin-bottom:4px}
+.item-descripcion{font-size:.8rem;color:#94a3b8;margin-bottom:6px}
+.item-precio{font-size:.85rem;color:#64748b}
+.item-precio strong{color:#10b981}
+
+.cantidad-control{
+  display:flex;align-items:center;gap:8px;
+  margin-top:8px
+}
+.cantidad-control button{
+  width:30px;height:30px;border-radius:6px;
+  border:none;background:#f1f5f9;color:#475569;
+  font-weight:600;cursor:pointer;transition:all .2s
+}
+.cantidad-control button:hover{background:#e2e8f0}
+.cantidad-control input{
+  width:50px;text-align:center;border:1px solid #e2e8f0;
+  border-radius:6px;height:30px;font-weight:600
+}
+
+.item-subtotal{
+  text-align:right;flex-shrink:0
+}
+.item-subtotal-valor{
+  font-size:1.1rem;font-weight:700;color:#10b981;
+  margin-bottom:8px
+}
+.btn-eliminar{
+  padding:6px 12px;background:#fee2e2;color:#991b1b;
+  border:none;border-radius:6px;font-size:.8rem;
+  font-weight:600;cursor:pointer;transition:all .2s
+}
+.btn-eliminar:hover{background:#fecaca}
+
+.carrito-resumen{
+  background:#fff;border-radius:12px;padding:20px;
+  margin-top:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)
+}
+.resumen-fila{
+  display:flex;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid #f1f5f9
+}
+.resumen-total{
+  display:flex;justify-content:space-between;
+  padding:14px 0;font-size:1.3rem;font-weight:700
+}
+.resumen-total .monto{color:#10b981}
+
+.btn-finalizar{
+  width:100%;padding:14px;background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color:#fff;border:none;border-radius:10px;
+  font-weight:600;font-size:1rem;cursor:pointer;
+  margin-top:16px;transition:all .2s
+}
+.btn-finalizar:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(30,64,175,.3)
+}
+
+.carrito-vacio{
+  text-align:center;padding:60px 20px;
+  background:#fff;border-radius:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.06)
+}
+.carrito-vacio i{font-size:4rem;color:#cbd5e1;margin-bottom:16px}
+.carrito-vacio h5{font-size:1.2rem;color:#475569;margin-bottom:8px}
+.carrito-vacio p{font-size:.9rem;color:#94a3b8;margin-bottom:20px}
+.btn-ir-productos{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:12px 24px;background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color:#fff;text-decoration:none;border-radius:10px;
+  font-weight:600;transition:all .2s
+}
+.btn-ir-productos:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(30,64,175,.3);color:#fff
+}
+</style>
+
+<div class="carrito-header">
+  <h5>Mi Carrito</h5>
+  <p>Revisa y ajusta tus productos antes de comprar</p>
+</div>
+
+{% if carrito and carrito|length > 0 %}
+
+<!-- ITEMS DEL CARRITO -->
+<div class="carrito-items">
+  {% for item in carrito %}
+  <div class="carrito-item">
+    
+    <!-- Imagen -->
+    <div class="item-img">
+      {% if item.imagen %}
+        <img src="{{ item.imagen }}" alt="{{ item.nombre }}">
+      {% else %}
+        <i class="bi bi-box-seam"></i>
+      {% endif %}
+    </div>
+
+    <!-- Info -->
+    <div class="item-info">
+      <div class="item-nombre">{{ item.nombre }}</div>
+      
+      {% if item.descripcion %}
+      <div class="item-descripcion">{{ item.descripcion[:60] }}...</div>
+      {% endif %}
+      
+      <div class="item-precio">
+        Precio: <strong>Bs {{ "%.2f"|format(item.precio) }}</strong>
+      </div>
+
+      <!-- Control de cantidad -->
+      <div class="cantidad-control">
+        <button onclick="cambiarCantidad({{ item.carrito_id }}, -1)">-</button>
+        <input type="text" value="{{ item.cantidad }}" id="cant-{{ item.carrito_id }}" readonly>
+        <button onclick="cambiarCantidad({{ item.carrito_id }}, 1)">+</button>
+      </div>
+    </div>
+
+    <!-- Subtotal y eliminar -->
+    <div class="item-subtotal">
+      <div class="item-subtotal-valor">Bs {{ "%.2f"|format(item.subtotal) }}</div>
+      
+      <form action="{{ url_for('cliente_eliminar_carrito', carrito_id=item.carrito_id) }}" 
+            method="POST" 
+            style="display:inline">
+        <button type="submit" class="btn-eliminar">
+          <i class="bi bi-trash"></i> Quitar
+        </button>
+      </form>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+<!-- RESUMEN -->
+<div class="carrito-resumen">
+  <div class="resumen-fila">
+    <span>Items:</span>
+    <span>{{ carrito|length }}</span>
+  </div>
+  
+  <div class="resumen-total">
+    <span>Total:</span>
+    <span class="monto" id="total-carrito">Bs {{ "%.2f"|format(total) }}</span>
+  </div>
+
+  <form action="{{ url_for('cliente_finalizar_compra') }}" method="POST">
+    <button type="submit" class="btn-finalizar">
+      <i class="bi bi-credit-card"></i> Finalizar Compra
+    </button>
+  </form>
+</div>
+
+{% else %}
+
+<!-- CARRITO VACÍO -->
+<div class="carrito-vacio">
+  <i class="bi bi-cart-x"></i>
+  <h5>Tu carrito está vacío</h5>
+  <p>Explora nuestros productos y agrega los que te gusten</p>
+  <a href="{{ url_for('cliente_productos') }}" class="btn-ir-productos">
+    <i class="bi bi-shop"></i> Ver Productos
+  </a>
+</div>
+
+{% endif %}
+
+<script>
+function cambiarCantidad(carritoId, delta) {
+    const input = document.getElementById(`cant-${carritoId}`);
+    let cantidad = parseInt(input.value) + delta;
+    
+    if(cantidad < 1) cantidad = 1;
+    
+    // Actualizar en servidor
+    fetch("{{ url_for('cliente_actualizar_cantidad') }}", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            carrito_id: carritoId,
+            cantidad: cantidad
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            // Recargar página para actualizar totales
+            location.reload();
+        } else {
+            alert(data.message || 'Error al actualizar cantidad');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        alert('Error al actualizar cantidad');
+    });
+}
+</script>
+
+{% endblock %}

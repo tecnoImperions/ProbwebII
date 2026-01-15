@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+{% block title %}Tiendas{% endblock %}
+
+{% block content %}
+<h2>Tiendas</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Administrador</th>
+            <th>Fecha Creación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tiendas %}
+        <tr>
+            <td>{{ t.id }}</td>
+            <td>{{ t.nombre }}</td>
+            <td>{{ t.direccion }}</td>
+            <td>{{ t.admin_nombre }}</td>
+            <td>{{ t.fecha_creacion }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

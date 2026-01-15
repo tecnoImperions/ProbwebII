@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Tienda</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .card-stats { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    table th { background-color: #343a40; color: white; }
+    .navbar-brand { font-weight: bold; }
+    .section-title { margin-top: 2rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Tienda Admin</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin_dashboard') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#usuarios">Usuarios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tiendas">Tiendas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#clientes">Clientes</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <!-- Bienvenida -->
+    <div class="mb-4">
+      <h2>Bienvenido, {{ user.nombre }}</h2>
+      <p class="text-muted">Panel de administración de la tienda</p>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row text-center mb-5">
+      <div class="col-md-3">
+        <div class="card card-stats p-3 bg-light">
+          <h5>Total Usuarios</h5>
+          <h3>{{ total_usuarios }}</h3>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stats p-3 bg-light">
+          <h5>Total Tiendas</h5>
+          <h3>{{ total_tiendas }}</h3>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stats p-3 bg-light">
+          <h5>Total Productos</h5>
+          <h3>{{ total_productos }}</h3>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-stats p-3 bg-light">
+          <h5>Productos Disponibles</h5>
+          <h3>{{ productos_disponibles }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Usuarios -->
+    <section id="usuarios" class="mb-5">
+      <h3 class="section-title">Usuarios</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Fecha Creación</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.nombre }}</td>
+            <td>{{ u.correo }}</td>
+            <td>{{ u.rol }}</td>
+            <td>{{ u.fecha_creacion }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">No hay usuarios registrados</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sección Tiendas -->
+    <section id="tiendas" class="mb-5">
+      <h3 class="section-title">Tiendas / Sucursales</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Admin</th>
+            <th>Fecha Creación</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tiendas %}
+          <tr>
+            <td>{{ t.id }}</td>
+            <td>{{ t.nombre }}</td>
+            <td>{{ t.direccion }}</td>
+            <td>{{ t.admin_nombre }}</td>
+            <td>{{ t.fecha_creacion }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">No hay tiendas registradas</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sección Productos -->
+    <section id="productos" class="mb-5">
+      <h3 class="section-title">Productos</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Tienda</th>
+            <th>Creador</th>
+            <th>Fecha Creación</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in productos %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.estado }}</td>
+            <td>{{ p.tienda_nombre }}</td>
+            <td>{{ p.usuario_nombre }}</td>
+            <td>{{ p.fecha_creacion }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6">No hay productos registrados</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sección Clientes -->
+    <section id="clientes" class="mb-5">
+      <h3 class="section-title">Clientes</h3>
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Fecha Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in clientes %}
+          <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.nombre }}</td>
+            <td>{{ c.correo }}</td>
+            <td>{{ c.fecha_creacion }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4">No hay clientes registrados</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

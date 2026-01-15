@@ -1,0 +1,90 @@
+{% extends 'cliente/base.html' %}
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<!-- ===== TARJETA BIENVENIDA ===== -->
+<div class="card mb-3 border-0"
+     style="background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color:#fff;
+            border-radius:16px;
+            box-shadow:0 10px 20px rgba(30,64,175,.25);">
+
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <small class="opacity-75">Bienvenido</small>
+        <h5 class="fw-bold mb-1">Hola, {{ user.nombre }} 👋</h5>
+        <small class="opacity-75">Tu tienda está lista para comprar</small>
+      </div>
+
+      <div style="font-size:2.2rem;opacity:.9">
+        <i class="bi bi-shop"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECCIÓN RESUMEN ===== -->
+<h6 class="fw-semibold text-muted mb-2">Resumen rápido</h6>
+
+<div class="row g-3">
+
+  <!-- DISPONIBLES -->
+  <div class="col-6">
+    <div class="card border-0 text-center"
+         style="border-radius:14px;">
+      <div class="card-body">
+        <div class="mb-2"
+             style="width:44px;height:44px;
+                    margin:auto;
+                    border-radius:12px;
+                    background:#e0e7ff;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;">
+          <i class="bi bi-box-seam text-primary fs-5"></i>
+        </div>
+
+        <div class="small text-muted">Productos</div>
+        <div class="fw-bold fs-5">{{ disponible|length }}</div>
+        <div class="small text-muted">Disponibles</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRITO -->
+  <div class="col-6">
+    <div class="card border-0 text-center"
+         style="border-radius:14px;">
+      <div class="card-body">
+        <div class="mb-2"
+             style="width:44px;height:44px;
+                    margin:auto;
+                    border-radius:12px;
+                    background:#dcfce7;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;">
+          <i class="bi bi-cart-fill text-success fs-5"></i>
+        </div>
+
+        <div class="small text-muted">En tu</div>
+        <div class="fw-bold fs-5">{{ carrito|length }}</div>
+        <div class="small text-muted">Carrito</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CTA ===== -->
+<div class="mt-4">
+  <a href="{{ url_for('cliente_productos') }}"
+     class="btn btn-primary w-100 py-2 rounded-3">
+    <i class="bi bi-bag-plus me-1"></i>
+    Ver productos disponibles
+  </a>
+</div>
+
+{% endblock %}

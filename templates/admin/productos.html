@@ -1,0 +1,32 @@
+{% extends 'admin/base.html' %}
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<h2>Productos</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Tienda</th>
+            <th>Usuario</th>
+            <th>Fecha Creación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.descripcion }}</td>
+            <td>{{ p.estado }}</td>
+            <td>{{ p.tienda_nombre }}</td>
+            <td>{{ p.usuario_nombre }}</td>
+            <td>{{ p.fecha_creacion }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

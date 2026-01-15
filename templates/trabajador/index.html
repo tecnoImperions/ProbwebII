@@ -1,0 +1,11 @@
+<h2>Panel de Trabajador</h2>
+<h3>Bienvenido {{ user.nombre }}</h3>
+
+<h4>Productos a cargo</h4>
+<ul>
+  {% for p in productos %}
+    <li>{{ p.nombre }} - {{ p.estado }}</li>
+  {% else %}
+    <li>No hay productos asignados</li>
+  {% endfor %}
+</ul>

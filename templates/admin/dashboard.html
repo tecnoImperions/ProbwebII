@@ -1,0 +1,43 @@
+<!-- templates/admin/dashboard.html -->
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Panel de Administración</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people"></i> Usuarios</h5>
+                <p class="card-text">{{ total_usuarios }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-shop"></i> Tiendas</h5>
+                <p class="card-text">{{ total_tiendas }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-box-seam"></i> Productos</h5>
+                <p class="card-text">{{ total_productos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-bag"></i> Pedidos</h5>
+                <p class="card-text">{{ total_pedidos }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

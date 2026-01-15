@@ -1,5 +1,4 @@
-CREATE DATABASE IF NOT EXISTS probwebII;
-USE probwebII;
+
 
 -- Tabla de roles
 CREATE TABLE roles (
@@ -46,3 +45,6 @@ CREATE TABLE productos (
     FOREIGN KEY (tienda_id) REFERENCES tiendas(id),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+
+

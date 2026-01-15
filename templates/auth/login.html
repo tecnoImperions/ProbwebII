@@ -1,46 +1,744 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Login - Mi Tienda</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-{% block title %}Login{% endblock %}
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        overflow-x: hidden;
+    }
 
-{% block content %}
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
-        <h3 class="text-center mb-3">Iniciar sesión</h3>
-        
-        {% if error %}
-            <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
+    .login-container {
+        width: 100%;
+        max-width: 480px;
+    }
 
-        <form method="POST">
-            <div class="mb-3">
-                <label for="correo" class="form-label">Correo</label>
-                <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo" required>
+    .login-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        border: none;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        color: white;
+        padding: 3rem 2rem 2.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .login-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-header i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        display: block;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        animation: storeBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes storeBounce {
+        0%, 100% { 
+            transform: translateY(0) scale(1);
+        }
+        50% { 
+            transform: translateY(-8px) scale(1.05);
+        }
+    }
+
+    .login-header h3 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+    }
+
+    .login-header p {
+        margin: 0.75rem 0 0 0;
+        opacity: 0.95;
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    .login-body {
+        padding: 2.5rem 2rem 2rem;
+    }
+
+    .welcome-text {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .welcome-text h4 {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-text p {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 1rem 1rem 1rem 3.25rem;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+        20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #0d6efd;
+        font-size: 1.25rem;
+        pointer-events: none;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus ~ .input-icon {
+        color: #0a58ca;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        padding: 0.5rem;
+        transition: all 0.3s;
+        z-index: 10;
+        font-size: 1.25rem;
+    }
+
+    .password-toggle:hover {
+        color: #0d6efd;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        margin-top: -0.5rem;
+    }
+
+    .remember-me input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #0d6efd;
+    }
+
+    .remember-me label {
+        color: #666;
+        font-size: 0.95rem;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .remember-me label i {
+        color: #0d6efd;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border: none;
+        color: white;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        touch-action: manipulation;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-login:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4);
+    }
+
+    .btn-login:active:not(:disabled) {
+        transform: translateY(-1px);
+    }
+
+    .btn-login:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .divider {
+        text-align: center;
+        margin: 2rem 0 1.5rem;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1.5rem;
+        position: relative;
+        color: #999;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .btn-register {
+        background: white;
+        border: 2px solid #0d6efd;
+        color: #0d6efd;
+        padding: 1rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+        border-radius: 12px;
+        width: 100%;
+        transition: all 0.3s ease;
+        touch-action: manipulation;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-register:hover {
+        background: #0d6efd;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+    }
+
+    .btn-register:active {
+        transform: translateY(-1px);
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.4s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.08);
+        border: 1px solid rgba(220, 53, 69, 0.15);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert-danger {
+        color: #c33;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+        color: #dc3545;
+    }
+
+    .forgot-password {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .forgot-password a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .forgot-password a:hover {
+        color: #0a58ca;
+        gap: 0.75rem;
+    }
+
+    .login-footer {
+        text-align: center;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(to bottom, transparent, rgba(13, 110, 253, 0.05));
+        font-size: 0.9rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .spinner-border-sm {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-width: 0.2em;
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 576px) {
+        body {
+            padding: 0.5rem;
+        }
+
+        .login-card {
+            border-radius: 20px;
+        }
+
+        .login-header {
+            padding: 2.5rem 1.5rem 2rem;
+        }
+
+        .login-header i {
+            font-size: 3.5rem;
+        }
+
+        .login-header h3 {
+            font-size: 1.75rem;
+        }
+
+        .login-header p {
+            font-size: 0.95rem;
+        }
+
+        .login-body {
+            padding: 2rem 1.5rem 1.5rem;
+        }
+
+        .welcome-text h4 {
+            font-size: 1.3rem;
+        }
+
+        .welcome-text p {
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            padding: 0.9rem 0.9rem 0.9rem 3rem;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .input-icon {
+            font-size: 1.15rem;
+            left: 0.9rem;
+        }
+
+        .password-toggle {
+            font-size: 1.15rem;
+            right: 0.9rem;
+        }
+
+        .btn-login {
+            padding: 0.9rem;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .btn-register {
+            padding: 0.9rem;
+            font-size: 0.95rem;
+            border-radius: 10px;
+        }
+
+        .divider {
+            margin: 1.5rem 0 1.25rem;
+        }
+
+        .login-footer {
+            padding: 1.25rem 1.5rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .login-header i {
+            font-size: 3rem;
+        }
+
+        .login-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .login-body {
+            padding: 1.75rem 1.25rem 1.25rem;
+        }
+
+        .welcome-text h4 {
+            font-size: 1.2rem;
+        }
+
+        .form-control {
+            font-size: 0.95rem;
+            padding: 0.85rem 0.85rem 0.85rem 2.75rem;
+        }
+
+        .input-icon {
+            font-size: 1.1rem;
+        }
+
+        .btn-login, .btn-register {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Desktop mejoras */
+    @media (min-width: 768px) {
+        .login-container {
+            max-width: 500px;
+        }
+
+        .login-card {
+            border-radius: 28px;
+        }
+
+        .login-header {
+            padding: 3.5rem 2.5rem 3rem;
+        }
+
+        .login-body {
+            padding: 3rem 2.5rem 2.5rem;
+        }
+    }
+
+    /* Landscape mobile */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .login-header {
+            padding: 1.5rem 2rem;
+        }
+
+        .login-header i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-body {
+            padding: 1.5rem 2rem;
+        }
+
+        .welcome-text {
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-header-content">
+                <i class="bi bi-shop"></i>
+                <h3>Mi Tienda</h3>
+                <p>Tu tienda en línea de confianza</p>
+            </div>
+        </div>
+
+        <div class="login-body">
+            <div class="welcome-text">
+                <h4>¡Bienvenido!</h4>
+                <p>Inicia sesión para continuar</p>
             </div>
 
-            <div class="mb-3 position-relative">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
-                <i class="bi bi-eye-slash" id="togglePassword" style="position: absolute; right: 10px; top: 38px; cursor: pointer;"></i>
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>{{ error }}</span>
+                </div>
+            {% endif %}
+
+            <form method="POST" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="bi bi-envelope-fill"></i>
+                        Correo Electrónico
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            name="correo" 
+                            class="form-control" 
+                            placeholder="correo@ejemplo.com"
+                            required
+                            autocomplete="email"
+                            autofocus
+                        >
+                        <i class="bi bi-envelope-fill input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="bi bi-lock-fill"></i>
+                        Contraseña
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password"
+                            class="form-control" 
+                            placeholder="Ingresa tu contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <i class="bi bi-key-fill input-icon"></i>
+                        <button type="button" class="password-toggle" id="togglePassword" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="remember-me">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">
+                        <i class="bi bi-shield-check"></i>
+                        Mantener sesión iniciada
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-login" id="loginBtn">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>¿No tienes cuenta?</span>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
+            <a href="{{ url_for('register') }}" class="btn btn-register">
+                <i class="bi bi-person-plus-fill"></i>
+                Crear Cuenta Nueva
+            </a>
 
-        <p class="text-center mt-3">
-            ¿No tienes cuenta? <a href="{{ url_for('register') }}">Regístrate</a>
-        </p>
+            <div class="forgot-password">
+                <a href="#" onclick="alert('Funcionalidad en desarrollo'); return false;">
+                    <i class="bi bi-question-circle-fill"></i>
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+        </div>
+
+        <div class="login-footer">
+            <i class="bi bi-shield-check-fill"></i>
+            <span>Tus datos están seguros</span>
+        </div>
     </div>
 </div>
 
 <script>
-const togglePassword = document.querySelector('#togglePassword');
-const password = document.querySelector('#password');
+// Toggle password visibility
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
 
-togglePassword.addEventListener('click', function () {
-    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-    password.setAttribute('type', type);
-    this.classList.toggle('bi-eye');
-    this.classList.toggle('bi-eye-slash');
+togglePassword.addEventListener('click', function(e) {
+    e.preventDefault();
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    const icon = this.querySelector('i');
+    icon.classList.toggle('bi-eye');
+    icon.classList.toggle('bi-eye-slash');
+});
+
+// Form validation and submission
+const loginForm = document.getElementById('loginForm');
+const loginBtn = document.getElementById('loginBtn');
+let formSubmitted = false;
+
+loginForm.addEventListener('submit', function(e) {
+    if(formSubmitted) {
+        e.preventDefault();
+        return false;
+    }
+
+    const correo = document.querySelector('input[name="correo"]');
+    const password = document.querySelector('input[name="password"]');
+    
+    // Reset invalid states
+    correo.classList.remove('is-invalid');
+    password.classList.remove('is-invalid');
+    
+    let valid = true;
+    
+    if(correo.value.trim() === '') {
+        correo.classList.add('is-invalid');
+        valid = false;
+    }
+    
+    if(password.value.trim() === '') {
+        password.classList.add('is-invalid');
+        valid = false;
+    }
+    
+    if(!valid) {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Add loading state
+    formSubmitted = true;
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
+});
+
+// Clear invalid state on input
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+    });
+});
+
+// Focus animation for inputs
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        this.parentElement.classList.remove('focused');
+    });
 });
 </script>
-{% endblock %}
+
+</body>
+</html>

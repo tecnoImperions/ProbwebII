@@ -1,0 +1,30 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Tiendas{% endblock %}
+
+{% block content %}
+<h1>Tiendas / Sucursales</h1>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Admin</th>
+            <th>Fecha Creación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tiendas %}
+        <tr>
+            <td>{{ t.id }}</td>
+            <td>{{ t.nombre }}</td>
+            <td>{{ t.direccion }}</td>
+            <td>{{ t.admin_nombre }}</td>
+            <td>{{ t.fecha_creacion }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

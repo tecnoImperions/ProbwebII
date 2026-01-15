@@ -1,0 +1,247 @@
+{% extends 'cliente/base.html' %}
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block content %}
+
+<style>
+/* ===================== */
+/* HEADER Y TITULO       */
+/* ===================== */
+.pedidos-header{
+  margin-bottom:20px;
+}
+.pedidos-header h5{
+  color:#1e293b;
+  font-size:1.5rem;
+  font-weight:700;
+  margin-bottom:4px;
+}
+.pedidos-header p{
+  color:#64748b;
+  font-size:0.9rem;
+}
+
+/* ===================== */
+/* TARJETA DE PEDIDO      */
+/* ===================== */
+.pedido-card{
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.06);
+  border-left:4px solid #e2e8f0;
+  transition:all 0.2s;
+  text-decoration:none;
+  color:inherit;
+}
+.pedido-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
+}
+.pedido-card.pendiente{ border-left-color:#f59e0b; }
+.pedido-card.enviado{ border-left-color:#3b82f6; }
+.pedido-card.entregado{ border-left-color:#10b981; }
+.pedido-card.cancelado{ border-left-color:#ef4444; }
+
+.pedido-header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:12px;
+}
+
+.pedido-numero{
+  font-size:0.95rem;
+  font-weight:600;
+  color:#1e293b;
+}
+.pedido-fecha{
+  font-size:0.8rem;
+  color:#94a3b8;
+  margin-top:2px;
+}
+
+.pedido-estado{
+  padding:5px 12px;
+  border-radius:10px;
+  font-size:0.75rem;
+  font-weight:600;
+  text-transform:uppercase;
+}
+
+.estado-pendiente{ background:#fef3c7; color:#92400e; }
+.estado-enviado{ background:#dbeafe; color:#1e40af; }
+.estado-entregado{ background:#d1fae5; color:#065f46; }
+.estado-cancelado{ background:#fee2e2; color:#991b1b; }
+
+/* INFO PEDIDO */
+.pedido-info{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-top:1px solid #f1f5f9;
+  padding-top:10px;
+  margin-top:10px;
+}
+
+.pedido-total{
+  font-size:1.25rem;
+  font-weight:700;
+  color:#10b981;
+}
+.pedido-productos{
+  font-size:0.85rem;
+  color:#64748b;
+}
+.pedido-productos i{ margin-right:4px; }
+
+/* ACCIONES */
+.pedido-acciones{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.btn-ver-detalle{
+  flex:1;
+  padding:8px 12px;
+  background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:0.85rem;
+  font-weight:600;
+  text-align:center;
+  text-decoration:none;
+  transition:all 0.2s;
+}
+.btn-ver-detalle:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(30,64,175,0.3);
+}
+
+.btn-cancelar{
+  padding:8px 12px;
+  background:#fee2e2;
+  color:#991b1b;
+  border:none;
+  border-radius:10px;
+  font-size:0.85rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-cancelar:hover{ background:#fecaca; }
+
+/* PEDIDO VACÍO */
+.pedidos-vacio{
+  text-align:center;
+  padding:60px 20px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 3px 8px rgba(0,0,0,0.06);
+}
+.pedidos-vacio i{
+  font-size:4rem;
+  color:#cbd5e1;
+  margin-bottom:16px;
+}
+.pedidos-vacio h5{
+  font-size:1.2rem;
+  color:#475569;
+  margin-bottom:8px;
+  font-weight:600;
+}
+.pedidos-vacio p{
+  font-size:0.9rem;
+  color:#94a3b8;
+  margin-bottom:20px;
+}
+.btn-ir-tienda{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:12px 24px;
+  background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color:#fff;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:600;
+  transition:all 0.2s;
+}
+.btn-ir-tienda:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(30,64,175,0.3);
+  color:#fff;
+}
+</style>
+
+<div class="pedidos-header">
+  <h5>Mis Pedidos</h5>
+  <p>Revisa el estado de tus compras</p>
+</div>
+
+{% if pedidos and pedidos|length > 0 %}
+<div class="pedidos-lista">
+  {% for pedido in pedidos %}
+  <div class="pedido-card {{ pedido.estado }}">
+    <div class="pedido-header-row">
+      <div>
+        <div class="pedido-numero">Pedido #{{ pedido.id }}</div>
+        <div class="pedido-fecha">
+          <i class="bi bi-calendar3"></i>
+          {{ pedido.fecha_creacion.strftime('%d/%m/%Y %H:%M') if pedido.fecha_creacion else 'Fecha no disponible' }}
+        </div>
+      </div>
+      <span class="pedido-estado estado-{{ pedido.estado }}">
+        {% if pedido.estado == 'pendiente' %}
+          <i class="bi bi-clock-history"></i> Pendiente
+        {% elif pedido.estado == 'enviado' %}
+          <i class="bi bi-truck"></i> Enviado
+        {% elif pedido.estado == 'entregado' %}
+          <i class="bi bi-check-circle"></i> Entregado
+        {% elif pedido.estado == 'cancelado' %}
+          <i class="bi bi-x-circle"></i> Cancelado
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="pedido-info">
+      <div class="pedido-total">BS {{ "%.2f"|format(pedido.total) }}</div>
+      <div class="pedido-productos">
+        <i class="bi bi-box-seam"></i>
+        {{ pedido.cantidad_productos }} producto{% if pedido.cantidad_productos != 1 %}s{% endif %}
+      </div>
+    </div>
+
+    <div class="pedido-acciones">
+      <a href="{{ url_for('cliente_ver_pedido', pedido_id=pedido.id) }}" class="btn-ver-detalle">
+        <i class="bi bi-eye"></i> Ver Detalle
+      </a>
+
+      {% if pedido.estado == 'pendiente' %}
+      <form action="{{ url_for('cliente_cancelar_pedido', pedido_id=pedido.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn-cancelar">
+          <i class="bi bi-x-lg"></i> Cancelar
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+
+<div class="pedidos-vacio">
+  <i class="bi bi-inbox"></i>
+  <h5>No tienes pedidos aún</h5>
+  <p>Explora nuestros productos y realiza tu primera compra</p>
+  <a href="{{ url_for('cliente_productos') }}" class="btn-ir-tienda">
+    <i class="bi bi-shop"></i> Ir a la Tienda
+  </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

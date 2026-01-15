@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprobante #{{ pedido.id }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    /* Contenedor tipo ticket térmico */
+    .ticket {
+      max-width: 380px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    .ticket-header {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #ddd;
+      margin-bottom: 16px;
+    }
+
+    .ticket-logo {
+      font-size: 3rem;
+      color: #1e40af;
+      margin-bottom: 8px;
+    }
+
+    .ticket-tienda {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .ticket-direccion {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin: 2px 0;
+    }
+
+    /* Estado */
+    .estado-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin: 12px 0;
+    }
+
+    .estado-badge.pendiente { background: #fef3c7; color: #92400e; }
+    .estado-badge.enviado { background: #dbeafe; color: #1e40af; }
+    .estado-badge.entregado { background: #d1fae5; color: #065f46; }
+    .estado-badge.cancelado { background: #fee2e2; color: #991b1b; }
+
+    /* Info */
+    .info-section {
+      margin: 16px 0;
+      padding: 12px 0;
+      border-bottom: 1px dashed #e5e5e5;
+    }
+
+    .info-titulo {
+      font-size: 0.75rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.85rem;
+    }
+
+    .info-label {
+      color: #64748b;
+    }
+
+    .info-valor {
+      color: #1e293b;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    /* Productos */
+    .producto-item {
+      padding: 10px 0;
+      border-bottom: 1px dotted #e5e5e5;
+    }
+
+    .producto-item:last-child {
+      border-bottom: none;
+    }
+
+    .producto-nombre {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+
+    .producto-detalle {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .producto-precio {
+      font-weight: 600;
+      color: #10b981;
+      margin-top: 4px;
+      font-size: 0.9rem;
+      text-align: right;
+    }
+
+    /* Total */
+    .total-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 2px dashed #ddd;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .subtotal-row {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .total-final {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .total-monto {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    /* Footer */
+    .ticket-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 2px dashed #ddd;
+      text-align: center;
+    }
+
+    .gracias {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .mensaje {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Botón imprimir (solo visible en pantalla) */
+    .btn-imprimir {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(30,64,175,0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-imprimir:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(30,64,175,0.4);
+    }
+
+    .btn-imprimir i {
+      font-size: 1.2rem;
+    }
+
+    /* Estilos de impresión */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .ticket {
+        max-width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .btn-imprimir {
+        display: none !important;
+      }
+
+      /* Ajustes para impresión térmica */
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+
+      .ticket {
+        padding: 16px;
+      }
+
+      .btn-imprimir {
+        bottom: 10px;
+        right: 10px;
+        padding: 12px 20px;
+        font-size: 0.85rem;
+      }
+    }
+    @media print {
+    html, body {
+        width: 80mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .ticket {
+        width: 80mm !important;
+        max-width: 80mm !important;
+    }
+    }
+
+    @page {
+    size: 80mm auto;
+    margin: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="ticket">
+    <!-- HEADER -->
+    <div class="ticket-header">
+      <div class="ticket-logo">
+        <i class="bi bi-receipt-cutoff"></i>
+      </div>
+      <div class="ticket-tienda">{{ pedido.tienda_nombre or "MI TIENDA" }}</div>
+      <div class="ticket-direccion">Santa Cruz, Bolivia</div>
+      <div class="ticket-direccion">Tel: (591) 6-3488086</div>
+      <div class="ticket-direccion">NIT: 123456789</div>
+      
+      <div class="estado-badge {{ pedido.estado }}">
+        {{ pedido.estado|capitalize }}
+      </div>
+    </div>
+
+    <!-- INFO PEDIDO -->
+    <div class="info-section">
+      <div class="info-titulo">Información del Pedido</div>
+      <div class="info-row">
+        <span class="info-label">Pedido:</span>
+        <span class="info-valor">#{{ pedido.id }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Fecha:</span>
+        <span class="info-valor">{{ pedido.fecha_creacion.strftime('%d/%m/%Y %H:%M') if pedido.fecha_creacion else 'N/A' }}</span>
+      </div>
+    </div>
+
+    <!-- INFO CLIENTE -->
+    <div class="info-section">
+      <div class="info-titulo">Cliente</div>
+      <div class="info-row">
+        <span class="info-label">Nombre:</span>
+        <span class="info-valor">{{ pedido.cliente_nombre }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Correo:</span>
+        <span class="info-valor">{{ pedido.cliente_correo }}</span>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="info-section">
+      <div class="info-titulo">Productos ({{ pedido.productos|length }})</div>
+      {% for producto in pedido.productos %}
+      <div class="producto-item">
+        <div class="producto-nombre">{{ producto.producto_nombre }}</div>
+        <div class="producto-detalle">
+          <span>Cantidad: {{ producto.cantidad }}</span>
+          <span>Bs {{ "%.2f"|format(producto.precio_unitario) }} c/u</span>
+        </div>
+        <div class="producto-precio">Bs {{ "%.2f"|format(producto.precio_unitario * producto.cantidad) }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-section">
+      {% set total_float = pedido.total|float %}
+      {% set subtotal = total_float / 1.13 %}
+      {% set iva = total_float - subtotal %}
+      
+      <div class="total-row subtotal-row">
+        <span>Subtotal:</span>
+        <span>Bs {{ "%.2f"|format(subtotal) }}</span>
+      </div>
+      <div class="total-row subtotal-row">
+        <span>IVA (13%):</span>
+        <span>Bs {{ "%.2f"|format(iva) }}</span>
+      </div>
+      <div class="total-row">
+        <span class="total-final">TOTAL:</span>
+        <span class="total-monto">Bs {{ "%.2f"|format(total_float) }}</span>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="ticket-footer">
+      <div class="gracias">¡Gracias por tu compra!</div>
+      <div class="mensaje">{{ pedido.fecha_creacion.strftime('%d de %B de %Y') if pedido.fecha_creacion else '' }}</div>
+      <div class="mensaje" style="margin-top: 8px;">
+        {% if pedido.estado == 'pendiente' %}
+        Tu pedido está siendo procesado
+        {% elif pedido.estado == 'enviado' %}
+        Tu pedido está en camino
+        {% elif pedido.estado == 'entregado' %}
+        Pedido entregado exitosamente
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN IMPRIMIR -->
+  <button class="btn-imprimir" onclick="window.print()">
+    <i class="bi bi-printer-fill"></i>
+    Imprimir
+  </button>
+
+  <script>
+    // Auto-abrir diálogo de impresión (opcional)
+    // window.onload = function() {
+    //   window.print();
+    // }
+  </script>
+
+</body>
+</html>

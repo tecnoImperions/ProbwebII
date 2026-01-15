@@ -1,0 +1,287 @@
+{% extends 'cliente/base.html' %}
+{% block title %}Pedido #{{ pedido.id }}{% endblock %}
+
+{% block content %}
+
+<style>
+/* ===================== */
+/* CONTENEDOR PRINCIPAL  */
+/* ===================== */
+.comprobante-container{
+  background:#fff;
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:20px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  max-width:700px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ===================== */
+/* HEADER DEL COMPROBANTE */
+/* ===================== */
+.comprobante-header{
+  text-align:center;
+  padding-bottom:16px;
+  border-bottom:2px dashed #e2e8f0;
+  margin-bottom:16px;
+}
+.comprobante-logo{
+  font-size:2.2rem;
+  color:#1e40af;
+  margin-bottom:6px;
+}
+.comprobante-titulo{
+  font-size:1.4rem;
+  font-weight:700;
+  color:#1e293b;
+  margin-bottom:4px;
+}
+.comprobante-subtitulo{
+  font-size:0.85rem;
+  color:#64748b;
+}
+
+/* ===================== */
+/* ESTADO DEL PEDIDO      */
+/* ===================== */
+.estado-pedido-box{
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:18px;
+  text-align:center;
+  color:#1e293b;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.estado-pedido-box.pendiente{ background:#fef3c7; color:#92400e; }
+.estado-pedido-box.enviado{ background:#dbeafe; color:#1e40af; }
+.estado-pedido-box.entregado{ background:#d1fae5; color:#065f46; }
+.estado-pedido-box.cancelado{ background:#fee2e2; color:#991b1b; }
+.estado-icono{
+  font-size:2.5rem;
+  margin-bottom:6px;
+}
+
+/* ===================== */
+/* INFORMACIÓN DEL PEDIDO */
+/* ===================== */
+.info-section{
+  margin-bottom:18px;
+}
+.info-titulo{
+  font-size:0.85rem;
+  font-weight:600;
+  color:#64748b;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  font-size:0.9rem;
+}
+.info-label{ color:#64748b; }
+.info-valor{ color:#1e293b; font-weight:500; }
+
+/* ===================== */
+/* PRODUCTOS             */
+/* ===================== */
+.producto-item{
+  display:flex;
+  gap:12px;
+  padding:10px;
+  background:#fafafa;
+  border-radius:8px;
+  margin-bottom:8px;
+}
+.producto-img{
+  width:60px;
+  height:60px;
+  border-radius:6px;
+  overflow:hidden;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+}
+.producto-img img{ width:100%; height:100%; object-fit:cover; }
+.producto-img i{ font-size:1.5rem; color:#cbd5e1; }
+.producto-detalle{ flex:1; }
+.producto-nombre{ font-size:0.9rem; font-weight:600; color:#1e293b; margin-bottom:2px; }
+.producto-cantidad{ font-size:0.75rem; color:#64748b; }
+.producto-precio{ font-size:0.95rem; font-weight:700; color:#10b981; }
+
+/* ===================== */
+/* TOTAL                 */
+/* ===================== */
+.total-section{
+  padding-top:16px;
+  border-top:2px dashed #e2e8f0;
+  margin-top:16px;
+}
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 0;
+}
+.total-label{
+  font-size:1.2rem;
+  font-weight:700;
+  color:#1e293b;
+}
+.total-monto{
+  font-size:1.8rem;
+  font-weight:700;
+  color:#10b981;
+}
+
+/* ===================== */
+/* NOTAS SEGÚN ESTADO     */
+/* ===================== */
+.nota-importante{
+  padding:12px;
+  border-radius:8px;
+  margin-top:16px;
+  display:flex;
+  gap:6px;
+  align-items:center;
+  font-size:0.85rem;
+}
+.nota-importante i{ font-size:1.2rem; }
+
+/* ===================== */
+/* BOTONES               */
+/* ===================== */
+.acciones-pedido{
+  display:grid;
+  gap:10px;
+  margin-top:20px;
+}
+.btn-accion{
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  font-weight:600;
+  font-size:0.9rem;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  text-decoration:none;
+}
+.btn-volver{ background:#f1f5f9; color:#475569; }
+.btn-volver:hover{ background:#e2e8f0; color:#475569; }
+.btn-imprimir{ background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color:#fff; }
+.btn-imprimir:hover{ transform:translateY(-2px); box-shadow:0 4px 12px rgba(30,64,175,0.3); color:#fff; }
+.btn-cancelar-pedido{ background:#fee2e2; color:#991b1b; }
+.btn-cancelar-pedido:hover{ background:#fecaca; }
+
+/* ===================== */
+/* RESPONSIVE            */
+/* ===================== */
+@media (max-width: 640px) {
+  .comprobante-container{ padding:16px; }
+  .comprobante-titulo{ font-size:1.2rem; }
+  .producto-item{ flex-direction:column; align-items:flex-start; }
+  .producto-precio{ align-self:flex-end; }
+}
+</style>
+
+<div class="comprobante-container">
+
+  <!-- HEADER -->
+  <div class="comprobante-header">
+    <div class="comprobante-logo">
+      <i class="bi bi-receipt"></i>
+    </div>
+    <div class="comprobante-titulo">Comprobante de Compra</div>
+    <div class="comprobante-subtitulo">{{ pedido.tienda_nombre }}</div>
+  </div>
+
+  <!-- ESTADO -->
+  <div class="estado-pedido-box {{ pedido.estado }}">
+    <div class="estado-icono">
+      {% if pedido.estado == 'pendiente' %}<i class="bi bi-clock-history"></i>
+      {% elif pedido.estado == 'enviado' %}<i class="bi bi-truck"></i>
+      {% elif pedido.estado == 'entregado' %}<i class="bi bi-check-circle-fill"></i>
+      {% elif pedido.estado == 'cancelado' %}<i class="bi bi-x-circle-fill"></i>{% endif %}
+    </div>
+    <div class="estado-texto">{{ pedido.estado|capitalize }}</div>
+  </div>
+
+  <!-- INFO PEDIDO -->
+  <div class="info-section">
+    <div class="info-titulo">Información del Pedido</div>
+    <div class="info-row"><span class="info-label">Pedido #:</span><span class="info-valor">#{{ pedido.id }}</span></div>
+    <div class="info-row"><span class="info-label">Fecha:</span><span class="info-valor">{{ pedido.fecha_creacion.strftime('%d/%m/%Y %H:%M') if pedido.fecha_creacion else 'N/A' }}</span></div>
+    <div class="info-row"><span class="info-label">Cliente:</span><span class="info-valor">{{ pedido.cliente_nombre }}</span></div>
+    <div class="info-row"><span class="info-label">Correo:</span><span class="info-valor">{{ pedido.cliente_correo }}</span></div>
+  </div>
+
+  <!-- PRODUCTOS -->
+  <div class="info-section">
+    <div class="info-titulo">Productos ({{ pedido.productos|length }})</div>
+    {% for producto in pedido.productos %}
+    <div class="producto-item">
+      <div class="producto-img">
+        {% if producto.producto_imagen %}<img src="{{ producto.producto_imagen }}" alt="{{ producto.producto_nombre }}">
+        {% else %}<i class="bi bi-box-seam"></i>{% endif %}
+      </div>
+      <div class="producto-detalle">
+        <div class="producto-nombre">{{ producto.producto_nombre }}</div>
+        <div class="producto-cantidad">Cantidad: {{ producto.cantidad }}</div>
+      </div>
+      <div class="producto-precio">Bs {{ "%.2f"|format(producto.precio_unitario * producto.cantidad) }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- TOTAL -->
+  <div class="total-section">
+    <div class="total-row">
+      <span class="total-label">Total</span>
+      <span class="total-monto">Bs {{ "%.2f"|format(pedido.total) }}</span>
+    </div>
+  </div>
+
+  <!-- NOTAS -->
+  {% if pedido.estado == 'pendiente' %}
+  <div class="nota-importante" style="background:#fef3c7;color:#92400e;"><i class="bi bi-info-circle-fill"></i><p>Tu pedido está en proceso. Te notificaremos cuando sea enviado.</p></div>
+  {% elif pedido.estado == 'enviado' %}
+  <div class="nota-importante" style="background:#dbeafe;color:#1e40af;"><i class="bi bi-truck"></i><p>Tu pedido está en camino. Pronto recibirás tus productos.</p></div>
+  {% elif pedido.estado == 'entregado' %}
+  <div class="nota-importante" style="background:#d1fae5;color:#065f46;"><i class="bi bi-check-circle-fill"></i><p>¡Pedido entregado! Gracias por tu compra.</p></div>
+  {% elif pedido.estado == 'cancelado' %}
+  <div class="nota-importante" style="background:#fee2e2;color:#991b1b;"><i class="bi bi-x-circle-fill"></i><p>Pedido cancelado. Si tienes dudas, contáctanos.</p></div>
+  {% endif %}
+
+</div>
+
+<!-- ACCIONES -->
+<div class="acciones-pedido">
+  <a href="{{ url_for('cliente_pedidos') }}" class="btn-accion btn-volver">
+    <i class="bi bi-arrow-left"></i> Volver a Mis Pedidos
+  </a>
+  
+  <a href="{{ url_for('cliente_imprimir_comprobante', pedido_id=pedido.id) }}" target="_blank" class="btn-accion btn-imprimir">
+    <i class="bi bi-printer-fill"></i> Imprimir Comprobante
+  </a>
+  
+  {% if pedido.estado == 'pendiente' %}
+  <form action="{{ url_for('cliente_cancelar_pedido', pedido_id=pedido.id) }}" method="POST" onsubmit="return confirm('¿Deseas cancelar este pedido?')">
+    <button type="submit" class="btn-accion btn-cancelar-pedido">
+      <i class="bi bi-x-lg"></i> Cancelar Pedido
+    </button>
+  </form>
+  {% endif %}
+</div>
+
+{% endblock %}

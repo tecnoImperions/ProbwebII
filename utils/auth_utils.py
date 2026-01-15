@@ -1,10 +1,13 @@
 from flask import session
 
-def login_user(user_id):
-    session['user_id'] = user_id
+# Guardar usuario completo en sesión
+def login_user(user):
+    session['user'] = user
 
+# Borrar sesión
 def logout_user():
-    session.pop('user_id', None)
+    session.pop('user', None)
 
+# Retornar usuario actual
 def current_user():
-    return session.get('user_id')
+    return session.get('user')

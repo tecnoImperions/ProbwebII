@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Usuarios</h2>
+
+<a href="{{ url_for('admin_usuarios_nuevo') }}" class="btn btn-primary mb-3">
+  <i class="bi bi-person-plus"></i> Nuevo Usuario
+</a>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Fecha Creación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.nombre }}</td>
+            <td>{{ u.correo }}</td>
+            <td>{{ u.rol }}</td>
+            <td>{{ u.fecha_creacion.strftime('%Y-%m-%d %H:%M:%S') if u.fecha_creacion else '' }}</td>
+            <td>
+                <!-- Editar -->
+                <a href="{{ url_for('admin_usuarios_editar', id=u.id) }}" class="btn btn-sm btn-warning" title="Editar">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <!-- Eliminar -->
+                <form action="{{ url_for('admin_usuarios_eliminar', id=u.id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                    <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+                <!-- Cambiar Rol -->
+                <a href="{{ url_for('admin_usuarios_cambiar_rol', id=u.id) }}" class="btn btn-sm btn-info" title="Cambiar Rol">
+                    <i class="bi bi-arrow-repeat"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

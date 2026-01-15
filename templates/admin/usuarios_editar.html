@@ -1,0 +1,37 @@
+{% extends 'admin/base.html' %}
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Editar Usuario</h2>
+
+<a href="{{ url_for('admin_usuarios') }}" class="btn btn-secondary mb-3">
+  <i class="bi bi-arrow-left"></i> Volver
+</a>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST">
+  <div class="mb-3">
+    <label for="nombre" class="form-label">Nombre</label>
+    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario.nombre }}" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="correo" class="form-label">Correo</label>
+    <input type="email" class="form-control" id="correo" name="correo" value="{{ usuario.correo }}" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="rol" class="form-label">Rol</label>
+    <select class="form-select" id="rol" name="rol">
+      <option value="usuario" {% if usuario.rol == 'usuario' %}selected{% endif %}>Usuario</option>
+      <option value="trabajador" {% if usuario.rol == 'trabajador' %}selected{% endif %}>Trabajador</option>
+      <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-warning">Actualizar Usuario</button>
+</form>
+{% endblock %}

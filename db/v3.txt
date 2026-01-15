@@ -1,0 +1,67 @@
+probwebII/
+│
+├─ app.py
+├─ models/
+│   ├─ admin/
+│   │   ├─ usuario.py
+│   │   ├─ producto.py
+│   │   ├─ tienda.py
+│   │   ├─ categoria.py
+│   │   ├─ pedido.py
+│   │   └─ cliente.py
+│   │
+│   ├─ cliente/
+│   │   ├─ usuario.py
+│   │   ├─ pedido.py
+│   │   └─ producto.py
+│   │
+│   ├─ trabajador/
+│   │   ├─ producto.py
+│   │   └─ pedido.py
+│   │
+│   └─ db.py
+│
+├─ templates/
+│   ├─ admin/
+│   │   ├─ base.html
+│   │   ├─ navbar.html
+│   │   ├─ dashboard.html
+│   │   ├─ productos.html
+│   │   ├─ pedidos.html
+│   │   ├─ categorias.html
+│   │   ├─ clientes.html
+│   │   ├─ sucursales.html
+│   │   └─ trabajadores.html
+│   │
+│   ├─ cliente/
+│   │   ├─ index.html
+│   │   ├─ pedidos.html
+│   │   └─ productos.html
+│   │
+│   ├─ trabajador/
+│   │   ├─ dashboard.html
+│   │   ├─ pedidos.html
+│   │   └─ productos.html
+│   │
+│   └─ auth/
+│       ├─ login.html
+│       └─ register.html
+│
+├─ static/
+│   ├─ css/
+│   │   ├─ admin.css
+│   │   ├─ cliente.css
+│   │   └─ trabajador.css
+│   │
+│   ├─ js/
+│   │   ├─ admin.js
+│   │   ├─ cliente.js
+│   │   └─ trabajador.js
+│   │
+│   └─ img/
+│       ├─ admin/
+│       ├─ cliente/
+│       └─ trabajador/
+│
+└─ utils/
+    └─ auth_utils.py
