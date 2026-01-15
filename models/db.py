@@ -2,10 +2,10 @@ import mysql.connector
 
 def get_connection():
     conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="probwebii"
+        host="Juanc101.mysql.pythonanywhere-services.com",
+        user="Juanc101",
+        password="Juan#8913394",
+        database="Juanc101$default"
     )
     
     cursor = conn.cursor()
